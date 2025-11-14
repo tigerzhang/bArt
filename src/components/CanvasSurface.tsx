@@ -70,16 +70,22 @@ export default function CanvasSurface() {
   const pan = useCanvasStore((s: CanvasState) => s.pan)
   const setZoom = useCanvasStore((s: CanvasState) => s.setZoom)
   const setPan = useCanvasStore((s: CanvasState) => s.setPan)
-  const [stageSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+  const [stageSize, setStageSize] = useState({ width: window.innerWidth, height: window.innerHeight })
   const stageRef = useRef<any>(null)
 
   useEffect(() => {
     const handleResize = () => {
-      // noop for now
+      setStageSize({ width: window.innerWidth, height: window.innerHeight })
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  // publish canvas (stage) size to store so other components can compute fit/zoom
+  const setCanvasSize = useCanvasStore((s) => s.setCanvasSize)
+  useEffect(() => {
+    setCanvasSize && setCanvasSize(stageSize)
+  }, [stageSize.width, stageSize.height])
 
   useEffect(() => {
     const stage = stageRef.current
@@ -119,6 +125,18 @@ export default function CanvasSurface() {
 
   return (
     <div className="canvas-surface" style={{ width: '100%', height: '100%' }}>
+      {/* Left bottom layout/layers toggle — moved from toolbar to a dedicated location */}
+      <div className="bottom-left-toolbar" style={{ left: 16, bottom: 18 }}>
+        <div className="panel-toggle">
+          <button aria-label="Toggle Layers" onClick={() => useCanvasStore.getState().toggleLayersPanel?.()}>
+            🗂
+          </button>
+        </div>
+        <div className="zoom-buttons">
+          <button aria-label="Zoom in" title="Zoom in" onClick={() => useCanvasStore.getState().setZoom(Math.min(useCanvasStore.getState().zoom * 1.2, 20))}>➕</button>
+          <button aria-label="Zoom out" title="Zoom out" onClick={() => useCanvasStore.getState().setZoom(Math.max(useCanvasStore.getState().zoom / 1.2, 0.1))}>➖</button>
+        </div>
+      </div>
       {/* left panel removed; toggle hidden */}
       <Stage
         ref={stageRef}

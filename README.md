@@ -23,7 +23,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000 — the demo contains a floating toolbar on the left, a layers overlay available from the toolbar, and a right-side panel with templates. Click the camera icon to add a sample image, drag it to move, toggle the `Layers` overlay from the toolbar to reorder, rename, hide/show and lock layers.
+Open http://localhost:3000 — the demo contains a floating toolbar on the left, a left-bottom toolbar with a toggle for the `Layers` overlay and quick zoom in/out buttons, and a right-side panel with templates. Click the camera icon to add a sample image, drag it to move and use the left-bottom toolbar to quickly zoom or show the `Layers` overlay.
 
 4. Tests
 

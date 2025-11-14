@@ -44,7 +44,10 @@ export default function LayersPanel() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                <button title="Rename" onClick={() => renameLayer(l.id, prompt('Rename layer', l.name || '') || l.name)}>
+                <button title="Rename" onClick={() => {
+                  const name = prompt('Rename layer', l.name || '')
+                  if (typeof name === 'string' && name !== l.name) renameLayer(l.id, name)
+                }}>
                   ✏️
                 </button>
                 <button title="Move up" onClick={() => moveLayer(l.id, layers.length - 1 - i - 1)} aria-label="Move layer up">▲</button>

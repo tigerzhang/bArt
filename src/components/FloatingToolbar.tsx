@@ -34,9 +34,8 @@ export default function FloatingToolbar() {
     <div className="floating-toolbar">
       <button onClick={onAddImage} title="Add image">📷</button>
       <button onClick={onAddRect} title="Add rectangle">▭</button>
-      <button title="Zoom in">➕</button>
-      <button title="Zoom out">➖</button>
-      <button onClick={() => toggleLayersPanel && toggleLayersPanel()} title="Toggle layers" aria-pressed={!!layersOpen}>🗂</button>
+      {/* zoom moved to bottom-left toolbar */}
+      {/* Layers button moved to left-bottom toggle; keep FloatingToolbar compact */}
     </div>
   )
 }

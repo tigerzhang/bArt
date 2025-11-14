@@ -38,7 +38,7 @@ This document breaks down the implementation of the Canvas core (image + video c
 - `Timeline` — timeline UI (tracks, clips, playhead) + scrubbing; syncs playback with the Canvas for previews
 - `ExportWorker` — OffscreenCanvas + worker for flattening frame(s) into PNG/JPEG or frames for video exports
 - `FloatingToolbar` — vertical, left-side floating toolbar for quick tools (add image, text, draw, layers). It's compact, accessible by keyboard, and overlays the canvas.
-  - Toggle layers: include a `Layers` icon in the `FloatingToolbar` to open/close the `Layers` overlay. This exposes quick layer operations without permanently consuming canvas space.
+  - Toggle layers & quick zoom: include a `Layers` icon and zoom controls (Zoom in / Zoom out) in the left-bottom overlay so users can quickly toggle the layers overlay and change zoom without leaving the bottom-left toolbar. This mirrors the screenshot pattern where toolbar controls are grouped in the bottom-left corner.
 - `ContextualToolbar` — selection-anchored action toolbar that appears near selected objects; quick actions include Upscale, Remove BG, Mockup, Edit Elements, Opacity, and Download.
  - `SelectionBadge` — small overlay component that shows asset dims or crop dims (e.g., `6016 x 4016`) anchored to selection bounding box; can be expanded into `Inspector` or copy to clipboard.
 
@@ -303,7 +303,7 @@ This document breaks down the implementation of the Canvas core (image + video c
  - [ ] Implement `RightPanel` with templates & promo banner
  - [ ] Make `RightPanel` & `LeftPanel` always float above the canvas (overlay) and update `App` layout to not subtract canvas space
  - [ ] Implement `RightPanel` with templates & promo banner
- - [x] Make `RightPanel` & `LeftPanel` always float above the canvas (overlay) and update `App` layout to not subtract canvas space
+- [x] Make `RightPanel` & `LeftPanel` always float above the canvas (overlay) and update `App` layout to not subtract canvas space
 - [ ] Add tests (unit & e2e) and configure CI
 - [ ] Accessibility: keyboard navigation, semantic markup, aria attributes
 

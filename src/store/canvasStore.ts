@@ -33,6 +33,8 @@ export type CanvasState = {
   toggleLayersPanel?: () => void
   setZoom: (z: number) => void
   setPan: (p: { x: number; y: number }) => void
+  canvasSize?: { width: number; height: number }
+  setCanvasSize?: (size: { width: number; height: number }) => void
   // No left panel in this layout; toolbar actions live in `FloatingToolbar`
 }
 
@@ -52,7 +54,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
       src: '/assets/sample.svg',
       name: 'Sample Image',
       visible: true,
-      locked: false,
+        // Removed accidental canvasSize entry
     },
   ],
   selectedId: null,
@@ -82,5 +84,6 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   toggleLayersPanel: () => set((s) => ({ layersPanelOpen: !s.layersPanelOpen })),
   setZoom: (z) => set({ zoom: z }),
   setPan: (p) => set({ pan: p }),
+  setCanvasSize: (size) => set({ canvasSize: size }),
   // toggleLeftPanel removed
 }))
