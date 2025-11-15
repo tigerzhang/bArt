@@ -4,6 +4,12 @@ This document breaks down the implementation of the Canvas core (image + video c
 
 ---
 
+## Styling & Visual language
+
+- Toolbars: All toolbar bubbles share the same visual language — a rounded card with a subtle border and soft shadow (controlled by `--toolbar-bg`, `--toolbar-border`, `--toolbar-radius`). Buttons inside use a circular (`--toolbar-button-size`) pill with unified hover/focus states.
+- Zoom menu: A small, rounded menu card matches the toolbar bubble shape and uses small right-aligned keyboard hints for power users. Menu entries should be accessible by keyboard and support Enter to select, arrow navigation, and Esc to close.
+- Responsiveness: Toolbars are compact and use CSS variables for sizing so we can easily swap to a compact 'compact' or 'relaxed' theme by toggling CSS variables.
+
 ## Goals (high level)
 - Provide a responsive canvas editor with Figma-like interactions: zoom, pan, multi-select, group/ungroup, snapping, alignment, and precise inspector edits.
 - Support image and video layers, mask/composition, and a timeline for video projects.
@@ -38,7 +44,7 @@ This document breaks down the implementation of the Canvas core (image + video c
 - `Timeline` — timeline UI (tracks, clips, playhead) + scrubbing; syncs playback with the Canvas for previews
 - `ExportWorker` — OffscreenCanvas + worker for flattening frame(s) into PNG/JPEG or frames for video exports
 - `FloatingToolbar` — vertical, left-side floating toolbar for quick tools (add image, text, draw, layers). It's compact, accessible by keyboard, and overlays the canvas.
-  - Toggle layers & quick zoom: include a `Layers` icon in the left-bottom overlay to open/close the `Layers` overlay, and put `Zoom in` / `Zoom out` controls in the `FloatingToolbar` so users can quickly toggle layers and adjust zoom without cluttering the canvas. This mirrors the screenshot pattern where quick actions are placed in compact tool areas.
+  - Toggle layers & quick zoom: include a `Layers` icon in the left-bottom overlay to open/close the `Layers` overlay. Zoom controls have been split into their own `ZoomToolbar` that sits near the bottom-left overlay (next to the Layers toggle). The `FloatingToolbar` stays compact and focused on asset/tool creation; the `ZoomToolbar` contains incremental zoom (+/–) and a clickable `zoom percentage` pill to open a `ZoomMenu` with presets and additional zoom actions.
 - `ContextualToolbar` — selection-anchored action toolbar that appears near selected objects; quick actions include Upscale, Remove BG, Mockup, Edit Elements, Opacity, and Download.
  - `SelectionBadge` — small overlay component that shows asset dims or crop dims (e.g., `6016 x 4016`) anchored to selection bounding box; can be expanded into `Inspector` or copy to clipboard.
 
@@ -159,12 +165,22 @@ This document breaks down the implementation of the Canvas core (image + video c
   - Zoom center: the zoom should center on the cursor/finger point and not the stage center when possible. Keep keyboard & mouse compatibility (`Cmd/Ctrl + MouseWheel`) + touch pinch.
   - Pan gestures: support `spacebar + drag` or two-finger pan on touch; provide a subtle cursor change while panning to show mode.
   - Fit viewport: keep the `Fit viewport` toolbar action; it should compute the bounding box of visible layers and adjust zoom/pan so content fits inside the view (accounting for overlay margins if the right/left panels are visible by default as overlays).
+  - Zoom menu: the `ZoomToolbar` includes a zoom percentage pill that opens a rounded `ZoomMenu` with preset zooms and actions:
+    - Zoom in / Zoom out (incremental — same effect as the + / - buttons)
+    - Fit to Screen (computes and centers content)
+    - Zoom to 50% / 100% / 200% (presets)
+    The `ZoomMenu` shows small keyboard hint tags (e.g., ⌘ +, ⌘ −) and closes on outside click; it uses the same store methods (`setZoom`, `setPan`) so the state is always consistent.
 
   ---
 
   ### Overlay & event propagation
 
   - Overlays should be implemented as a separate React layer above the `CanvasSurface` but below modal dialogs. Use CSS `pointer-events` to control if an overlay allows click-through to the stage.
+  - Popup menus (e.g., `ZoomMenu`) should anchor to the toolbar control, be placed in the overlay layer, and close on outside click. When open, menus should trap keyboard focus (arrow navigation, Enter to select, Esc to close) to follow accessibility guidelines.
+    - Anchor & alignment: menus are left-aligned with the toolbar control by default (menu left edge aligns to the toolbar control left edge). This gives consistent visual offset when toolbars are anchored to screen edges.
+    - No caret: menus do not display a caret/anchor arrow — prefer a clean rounded card that visually separates from the toolbar bubble.
+    - Toggle behavior: clicking the toolbar control when its popover is visible should hide the popover (the trigger toggles open/closed), in addition to closing on outside click or ESC.
+      - Implementation detail: when handling outside clicks, ignore clicks on the toolbar trigger element (use the `labelledBy` trigger id) so a single click on the trigger reliably toggles the menu instead of causing the menu to close then immediately re-open.
   - When overlays are interactive, they should trap events within their bounds. When a user initiates a drag on the stage and drags over overlays, temporarily set `pointer-events: none` on the overlays to allow smooth dragging operations (restore after drag finished).
   - For Konva, use stage `getPointerPosition()` to map screen positions; for pointer events that originate from overlay DOM elements, convert DOM coords to stage coords with `stage.getPointerPosition()` after calling `stage._pointerPos = {x,y}` if needed.
 
@@ -300,6 +316,8 @@ This document breaks down the implementation of the Canvas core (image + video c
 - [ ] Add snapping guides and alignment tools in top `Toolbar`
 - [ ] Add OffscreenCanvas worker and `ExportService`
 - [ ] Add `Timeline` and hooks for syncing with `CanvasSurface`
+ - [x] Add `ZoomToolbar` (bottom-left) with zoom +/- and `zoom percentage` pill
+ - [x] Add `ZoomMenu` (zoom presets, fit to screen, keyboard hints)
  - [ ] Implement `RightPanel` with templates & promo banner
  - [ ] Make `RightPanel` & `LeftPanel` always float above the canvas (overlay) and update `App` layout to not subtract canvas space
  - [ ] Implement `RightPanel` with templates & promo banner

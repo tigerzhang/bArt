@@ -9,9 +9,19 @@ html,body,#root{height:100%;margin:0}
 .bottom-left-toolbar .zoom-display{font-size:12px;opacity:0.9;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.04);text-align:center}
 
 /* Zoom toolbar (left-bottom) */
-.zoom-toolbar{display:flex;flex-direction:row;gap:var(--toolbar-gap);align-items:center;padding:4px 8px;background:var(--toolbar-bg);box-shadow:0 8px 20px rgba(0,0,0,0.08);border-radius:var(--toolbar-radius);border:1px solid var(--toolbar-border);overflow:hidden}
+.zoom-toolbar{display:flex;flex-direction:row;gap:var(--toolbar-gap);align-items:center;padding:4px 8px;background:var(--toolbar-bg);box-shadow:0 8px 20px rgba(0,0,0,0.08);border-radius:var(--toolbar-radius);border:1px solid var(--toolbar-border);overflow:visible;position:relative}
 .zoom-toolbar .toolbar-button{width:var(--toolbar-button-size);height:var(--toolbar-button-size);border-radius:var(--toolbar-button-radius);background:transparent;border:1px solid #eee;font-size:var(--toolbar-font-size);cursor:pointer}
-.zoom-toolbar .zoom-display{padding:4px 6px;border-radius:999px;background:rgba(0,0,0,0.03);font-size:11px;color:var(--text-color,#000)}
+.zoom-toolbar .zoom-display{padding:4px 6px;border-radius:999px;background:rgba(0,0,0,0.03);font-size:11px;color:var(--text-color,#000);border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.zoom-toolbar .zoom-display:focus{outline:none;box-shadow:0 0 0 3px rgba(0,0,0,0.04)}
+
+/* Zoom menu */
+.zoom-menu{position:absolute;left:0;bottom:calc(100% + 8px);min-width:220px;background:var(--toolbar-bg);box-shadow:0 10px 40px rgba(0,0,0,0.12);border-radius:12px;border:1px solid var(--toolbar-border);z-index:60;padding:8px}
+.zoom-menu ul{list-style:none;margin:0;padding:0}
+.zoom-menu li{padding:10px 12px;border-radius:8px;cursor:pointer;color:#233;white-space:nowrap}
+.zoom-menu li:hover{background:rgba(0,0,0,0.04)}
+.zoom-menu li + li{margin-top:6px}
+.zoom-menu li{display:flex;justify-content:space-between;align-items:center}
+.zoom-menu .key{opacity:0.5;font-size:13px;margin-left:12px}
 .right-panel{position:fixed;right:16px;top:16px;bottom:16px;width:320px;background:var(--panel-bg);box-shadow:0 6px 18px rgba(0,0,0,0.07);border-radius:6px;padding:12px;z-index:20}
 .layers-panel{position:fixed;left:16px;top:16px;bottom:16px;width:260px;background:var(--panel-bg);box-shadow:0 8px 30px rgba(0,0,0,0.08);border-radius:8px;padding:12px;z-index:30;overflow:auto}
 .layers-panel h4{font-size:14px}
