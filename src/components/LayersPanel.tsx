@@ -14,14 +14,21 @@ export default function LayersPanel() {
   const open = useCanvasStore((s: CanvasState) => s.layersPanelOpen)
   const close = useCanvasStore((s: CanvasState) => s.toggleLayersPanel)
 
-  if (!open) return null
+  const [exiting, setExiting] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!open) setExiting(false)
+  }, [open])
+
+  if (!open && !exiting) return null
+  // TODO: animate mount/unmount with CSS classes for fold/unfold
 
   return (
-    <aside className="layers-panel" role="navigation" aria-label="Layers panel">
+    <aside id="layers-panel" className={`layers-panel ${exiting ? 'exit' : 'enter'}`} role="navigation" aria-label="Layers panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h4 style={{ margin: 0 }}>Layers</h4>
         <div>
-          <button onClick={() => close && close()} aria-label="Close layers">✕</button>
+          <button className="fold-button" title="Fold to toggle" aria-label="Fold layers to toggle" onClick={() => { setExiting(true); setTimeout(() => close && close(), 240) }}>▾</button>
         </div>
       </div>
       <ul>

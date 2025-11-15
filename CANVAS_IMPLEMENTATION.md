@@ -181,6 +181,17 @@ This document breaks down the implementation of the Canvas core (image + video c
     - No caret: menus do not display a caret/anchor arrow — prefer a clean rounded card that visually separates from the toolbar bubble.
     - Toggle behavior: clicking the toolbar control when its popover is visible should hide the popover (the trigger toggles open/closed), in addition to closing on outside click or ESC.
       - Implementation detail: when handling outside clicks, ignore clicks on the toolbar trigger element (use the `labelledBy` trigger id) so a single click on the trigger reliably toggles the menu instead of causing the menu to close then immediately re-open.
+    - Panel fold/unfold pattern
+      - All panels (left-hand `LayersPanel`, right-hand `RightPanel`, etc.) should be attached to a small, circular toggle button in a toolbar. Clicking the button toggles the panel open/closed with a short animation.
+      - Each panel contains a small 'fold' / 'close' button in its header that folds the panel back to its toggle button. The panel should animate toward the toggle control (scale + translate) so it visually appears to fold back into the toggle.
+      - Implementation details:
+        - Add a boolean store state for each panel (e.g., `layersPanelOpen`, `rightPanelOpen`) and small `toggle` functions in the `canvasStore` to control visibility.
+        - Toggle placement:
+          - Left (Layers) toggle sits in the bottom-left toolbar. When the panel is opened, the fold control will be positioned at the same bottom-left location (fixed) so it appears to fold back to its toggle.
+          - Right (Inspector/RightPanel) toggle sits in the top-right toolbar. The panel will open anchored to the top-right and its fold control is positioned at the top-right (fixed) to visually match the toggle position.
+        - On open: render the panel; apply `.enter` CSS class so it animates into view. On fold/close: set an `exiting` flag, add `.exit` CSS class and delay toggling store state until after animation (240ms) to allow the fold animation to complete.
+        - Use `transform-origin` on the panel CSS (`0% 100%` for left, `100% 100%` for right) and a `translateX` plus `scaleX` to visually fold toward the toggle button.
+        - This pattern preserves the overlay layer while providing a clean UX where panels behave like popovers and can be toggled or folded without changing the canvas layout.
   - When overlays are interactive, they should trap events within their bounds. When a user initiates a drag on the stage and drags over overlays, temporarily set `pointer-events: none` on the overlays to allow smooth dragging operations (restore after drag finished).
   - For Konva, use stage `getPointerPosition()` to map screen positions; for pointer events that originate from overlay DOM elements, convert DOM coords to stage coords with `stage.getPointerPosition()` after calling `stage._pointerPos = {x,y}` if needed.
 

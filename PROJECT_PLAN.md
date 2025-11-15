@@ -73,6 +73,8 @@ Target tech stack: React + Material UI (MUI), TypeScript, and suitable canvas & 
   - `AssetsPanel`, `LayersPanel`, `PropertiesPanel` (Inspector)
     - `LayersPanel` notes: the left `LayersPanel` is removed from the default layout to keep the canvas clean; layer operations will be exposed in the `FloatingToolbar` and contextual inspector. Consider adding an advanced 'Dock' mode for users who prefer a persistent layer list.
   - `Toolbar` (Top) with actions (undo/redo, group, align)
+    - Panels behave as overlays with toggles: a circular toggle button opens a panel with animation; panels include a fold/hide control to fold back to the toggle. This keeps the canvas unobstructed while exposing panel content on demand.
+      - Toggle positions: Layers (left) toggle is anchored to bottom-left overlay; RightPanel toggle is anchored to top-right overlay; when a panel is open its fold button is positioned to match the toggle location so the fold animation looks like the panel folding into the toggle.
   - `FilterEditor`, `MaskingTool`, `PenPathEditor` (vector path tools)
 - Timeline (Video)
   - `Tracks`, `Clip` components, `Playhead`, `Keyframes`, `Trim handles`

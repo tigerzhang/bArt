@@ -127,9 +127,14 @@ export default function CanvasSurface() {
   return (
     <div className="canvas-surface" style={{ width: '100%', height: '100%' }}>
       {/* Left bottom layout/layers toggle — moved from toolbar to a dedicated location */}
-      <div className="bottom-left-toolbar" style={{ left: 16, bottom: 18 }}>
+      <div className="bottom-left-toolbar" style={{ left: 'var(--panel-left-offset)', bottom: 'var(--panel-bottom-offset)' }}>
         <div className="panel-toggle">
-          <button aria-label="Toggle Layers" onClick={() => useCanvasStore.getState().toggleLayersPanel?.()}>
+          <button aria-controls="layers-panel" aria-expanded={!!useCanvasStore.getState().layersPanelOpen} aria-label="Toggle Layers" onClick={() => {
+            const fn = useCanvasStore.getState().toggleLayersPanel
+            if (!fn) return
+            // make it open immediately — LayersPanel handles exit animation
+            fn()
+          }}>
             🗂
           </button>
         </div>
@@ -137,6 +142,12 @@ export default function CanvasSurface() {
         <div style={{ marginLeft: 8 }}>
           {/* import ZoomToolbar inline to keep bottom-left layout tidy */}
           <ZoomToolbar />
+        </div>
+      </div>
+      {/* top-right toolbar with RightPanel toggle */}
+      <div className="top-right-toolbar" style={{ right: 'var(--panel-top-right-offset)', top: 'var(--panel-top-offset)', position: 'fixed', zIndex: 40 }}>
+        <div className="panel-toggle">
+          <button aria-controls="right-panel" aria-label="Toggle Right Panel" aria-expanded={!!useCanvasStore.getState().rightPanelOpen} onClick={() => useCanvasStore.getState().toggleRightPanel?.()}>📂</button>
         </div>
       </div>
       {/* left panel removed; toggle hidden */}

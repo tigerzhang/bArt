@@ -23,6 +23,7 @@ export type CanvasState = {
   zoom: number
   pan: { x: number; y: number }
   layersPanelOpen?: boolean
+  rightPanelOpen?: boolean
   addLayer: (layer: Layer) => void
   selectLayer: (id: string | null) => void
   updateLayer: (id: string, patch: Partial<Layer>) => void
@@ -31,6 +32,7 @@ export type CanvasState = {
   renameLayer: (id: string, name: string) => void
   moveLayer: (id: string, to: number) => void
   toggleLayersPanel?: () => void
+  toggleRightPanel?: () => void
   setZoom: (z: number) => void
   setPan: (p: { x: number; y: number }) => void
   canvasSize?: { width: number; height: number }
@@ -61,6 +63,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   zoom: 1,
   pan: { x: 0, y: 0 },
   layersPanelOpen: false,
+  rightPanelOpen: true,
   addLayer: (layer) =>
     set((s) => ({ layers: [...s.layers, { ...layer, visible: true, locked: false }], selectedId: layer.id })),
   selectLayer: (id) => set(() => ({ selectedId: id })),
@@ -82,6 +85,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
       return { layers: copy }
     }),
   toggleLayersPanel: () => set((s) => ({ layersPanelOpen: !s.layersPanelOpen })),
+  toggleRightPanel: () => set((s) => ({ rightPanelOpen: !s.rightPanelOpen })),
   setZoom: (z) => set({ zoom: z }),
   setPan: (p) => set({ pan: p }),
   setCanvasSize: (size) => set({ canvasSize: size }),

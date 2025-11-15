@@ -1,4 +1,4 @@
-:root{--toolbar-bg:rgba(255,255,255,0.95);--panel-bg:rgba(255,255,255,0.98);--toolbar-radius:20px;--toolbar-button-radius:999px;--toolbar-hover:rgba(0,0,0,0.04);--toolbar-border:rgba(0,0,0,0.06);--toolbar-button-size:36px;--toolbar-padding:6px;--toolbar-gap:6px;--toolbar-font-size:16px;--panel-toggle-size:44px}
+:root{--toolbar-bg:rgba(255,255,255,0.95);--panel-bg:rgba(255,255,255,0.98);--toolbar-radius:20px;--toolbar-button-radius:999px;--toolbar-hover:rgba(0,0,0,0.04);--toolbar-border:rgba(0,0,0,0.06);--toolbar-button-size:36px;--toolbar-padding:6px;--toolbar-gap:6px;--toolbar-font-size:16px;--panel-toggle-size:44px;--panel-vertical-margin:16px;--panel-top-right-offset:16px;--panel-top-offset:18px;--panel-left-offset:16px;--panel-bottom-offset:18px}
 html,body,#root{height:100%;margin:0}
 .app-root{height:100vh;background:#fafafa;position:relative;overflow:hidden}
 .canvas-surface{position:absolute;left:0;top:0;right:0;bottom:0}
@@ -22,8 +22,19 @@ html,body,#root{height:100%;margin:0}
 .zoom-menu li + li{margin-top:6px}
 .zoom-menu li{display:flex;justify-content:space-between;align-items:center}
 .zoom-menu .key{opacity:0.5;font-size:13px;margin-left:12px}
-.right-panel{position:fixed;right:16px;top:16px;bottom:16px;width:320px;background:var(--panel-bg);box-shadow:0 6px 18px rgba(0,0,0,0.07);border-radius:6px;padding:12px;z-index:20}
-.layers-panel{position:fixed;left:16px;top:16px;bottom:16px;width:260px;background:var(--panel-bg);box-shadow:0 8px 30px rgba(0,0,0,0.08);border-radius:8px;padding:12px;z-index:30;overflow:auto}
+.right-panel{position:fixed;right:var(--panel-top-right-offset);top:var(--panel-top-offset);bottom:var(--panel-vertical-margin);width:320px;background:var(--panel-bg);box-shadow:0 6px 28px rgba(0,0,0,0.12);border-radius:6px;padding:12px;z-index:110}
+/* animate open/close from the toggle button */
+.right-panel{
+	transform-origin:100% 100%;
+	transition:transform 240ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
+}
+.right-panel.enter{transform:translateX(0) scaleX(1);opacity:1}
+.right-panel.exit{transform:translateX(calc(var(--panel-toggle-size) - 8px)) scaleX(0.2);opacity:0}
+.layers-panel{position:fixed;left:var(--panel-left-offset);top:var(--panel-vertical-margin);bottom:calc(var(--panel-vertical-margin) + var(--panel-bottom-offset));width:260px;background:var(--panel-bg);box-shadow:0 8px 30px rgba(0,0,0,0.12);border-radius:8px;padding:12px;z-index:110;overflow:auto}
+/* fold/unfold animations anchored to left toggle */
+.layers-panel{transform-origin:0% 100%;transition:transform 240ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;max-height:calc(100vh - (var(--panel-vertical-margin) + var(--panel-vertical-margin) + var(--panel-bottom-offset)));}
+.layers-panel.enter{transform:translateX(0) scaleX(1);opacity:1}
+.layers-panel.exit{transform:translateX(calc(-1 * (var(--panel-toggle-size) - 8px))) scaleX(0.2);opacity:0}
 .layers-panel h4{font-size:14px}
 .layers-panel ul{list-style:none;padding:8px;margin:8px 0}
 .layers-panel li{padding:8px;border-radius:6px;cursor:pointer}
@@ -43,5 +54,14 @@ html,body,#root{height:100%;margin:0}
 .panel-toggle button:hover,.panel-toggle button:focus{background:var(--toolbar-hover);border-color:rgba(0,0,0,0.06);transform:translateY(-1px)}
 
 .bottom-left-toolbar{position:fixed;left:16px;bottom:18px;z-index:40;display:flex;flex-direction:row;gap:var(--toolbar-gap);align-items:flex-end}
+.top-right-toolbar{position:fixed;right:var(--panel-top-right-offset);top:var(--panel-top-offset);z-index:40}
+.top-right-toolbar .panel-toggle{display:inline-flex}
+.fold-button{position:fixed;z-index:120;display:inline-flex;width:var(--panel-toggle-size);height:var(--panel-toggle-size);align-items:center;justify-content:center;border-radius:999px;background:var(--toolbar-bg);border:1px solid #eee;cursor:pointer}
+.right-panel .fold-button{right:var(--panel-top-right-offset);top:var(--panel-top-offset)}
+.layers-panel .fold-button{left:var(--panel-left-offset);bottom:var(--panel-bottom-offset)}
 .bottom-left-toolbar .zoom-toolbar{display:flex;flex-direction:row;gap:8px;align-items:center}
 .bottom-left-toolbar .toolbar-button{width:var(--toolbar-button-size);height:var(--toolbar-button-size)}
+
+/* mirror for right-side toggle */
+.bottom-right-toolbar{position:fixed;right:16px;bottom:18px;z-index:40;display:flex;flex-direction:row;gap:var(--toolbar-gap);align-items:flex-end}
+.bottom-right-toolbar .toolbar-button{width:var(--toolbar-button-size);height:var(--toolbar-button-size)}
