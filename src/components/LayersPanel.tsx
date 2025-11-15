@@ -15,6 +15,7 @@ export default function LayersPanel() {
   const close = useCanvasStore((s: CanvasState) => s.toggleLayersPanel)
 
   const [exiting, setExiting] = React.useState(false)
+  const ref = React.useRef<HTMLElement | null>(null)
 
   React.useEffect(() => {
     if (!open) setExiting(false)
@@ -24,11 +25,31 @@ export default function LayersPanel() {
   // TODO: animate mount/unmount with CSS classes for fold/unfold
 
   return (
-    <aside id="layers-panel" className={`layers-panel ${exiting ? 'exit' : 'enter'}`} role="navigation" aria-label="Layers panel">
+    <aside ref={ref} id="layers-panel" className={`layers-panel ${exiting ? 'exit' : 'enter'}`} role="navigation" aria-label="Layers panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h4 style={{ margin: 0 }}>Layers</h4>
         <div>
-          <button className="fold-button" title="Fold to toggle" aria-label="Fold layers to toggle" onClick={() => { setExiting(true); setTimeout(() => close && close(), 240) }}>▾</button>
+          <button
+            className="fold-button"
+            title="Fold to toggle"
+            aria-label="Fold layers to toggle"
+            onClick={() => {
+              setExiting(true)
+              const el = ref.current
+              if (!el) {
+                // fallback
+                setTimeout(() => close && close(), 260)
+                return
+              }
+              const onEnd = (e: TransitionEvent) => {
+                if (e.propertyName && e.propertyName.includes('transform')) {
+                  el.removeEventListener('transitionend', onEnd)
+                  close && close()
+                }
+              }
+              el.addEventListener('transitionend', onEnd)
+            }}
+          >▾</button>
         </div>
       </div>
       <ul>

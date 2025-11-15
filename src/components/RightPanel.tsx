@@ -5,7 +5,8 @@ export default function RightPanel() {
   const open = useCanvasStore((s: CanvasState) => s.rightPanelOpen)
   const toggle = useCanvasStore((s: CanvasState) => s.toggleRightPanel)
 
-  const [exiting, setExiting] = React.useState(false)
+    const [exiting, setExiting] = React.useState(false)
+    const ref = React.useRef<HTMLDivElement | null>(null)
 
   React.useEffect(() => {
     if (!open) setExiting(false)
@@ -19,10 +20,24 @@ export default function RightPanel() {
   // show 'enter' class on mount — a later refactor can make this a full mount/unmount transition.
 
   return (
-    <div id="right-panel" className={`right-panel ${exiting ? 'exit' : 'enter'}`} role="complementary" aria-label="Right panel">
+      <div ref={ref} id="right-panel" className={`right-panel ${exiting ? 'exit' : 'enter'}`} role="complementary" aria-label="Right panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h4 style={{ margin: 0 }}>Templates</h4>
-        <button className="fold-button" aria-label="Fold right panel" onClick={() => { setExiting(true); setTimeout(() => toggle && toggle(), 240) }}>▾</button>
+          <button className="fold-button" aria-label="Fold right panel" onClick={() => {
+            setExiting(true)
+            const el = ref.current
+            if (!el) {
+              setTimeout(() => toggle && toggle(), 260)
+              return
+            }
+            const onEnd = (e: TransitionEvent) => {
+              if (e.propertyName && e.propertyName.includes('transform')) {
+                el.removeEventListener('transitionend', onEnd)
+                toggle && toggle()
+              }
+            }
+            el.addEventListener('transitionend', onEnd)
+          }}>▾</button>
       </div>
       <div className="user-greeting">Hi, Designer 👋</div>
       <div className="templates">
