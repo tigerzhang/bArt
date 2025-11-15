@@ -38,7 +38,7 @@ This document breaks down the implementation of the Canvas core (image + video c
 - `Timeline` — timeline UI (tracks, clips, playhead) + scrubbing; syncs playback with the Canvas for previews
 - `ExportWorker` — OffscreenCanvas + worker for flattening frame(s) into PNG/JPEG or frames for video exports
 - `FloatingToolbar` — vertical, left-side floating toolbar for quick tools (add image, text, draw, layers). It's compact, accessible by keyboard, and overlays the canvas.
-  - Toggle layers & quick zoom: include a `Layers` icon and zoom controls (Zoom in / Zoom out) in the left-bottom overlay so users can quickly toggle the layers overlay and change zoom without leaving the bottom-left toolbar. This mirrors the screenshot pattern where toolbar controls are grouped in the bottom-left corner.
+  - Toggle layers & quick zoom: include a `Layers` icon in the left-bottom overlay to open/close the `Layers` overlay, and put `Zoom in` / `Zoom out` controls in the `FloatingToolbar` so users can quickly toggle layers and adjust zoom without cluttering the canvas. This mirrors the screenshot pattern where quick actions are placed in compact tool areas.
 - `ContextualToolbar` — selection-anchored action toolbar that appears near selected objects; quick actions include Upscale, Remove BG, Mockup, Edit Elements, Opacity, and Download.
  - `SelectionBadge` — small overlay component that shows asset dims or crop dims (e.g., `6016 x 4016`) anchored to selection bounding box; can be expanded into `Inspector` or copy to clipboard.
 

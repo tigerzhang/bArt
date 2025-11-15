@@ -3,8 +3,7 @@ import { useCanvasStore, CanvasState } from '../store/canvasStore'
 
 export default function FloatingToolbar() {
   const addLayer = useCanvasStore((s: CanvasState) => s.addLayer)
-  const toggleLayersPanel = useCanvasStore((s: CanvasState) => s.toggleLayersPanel)
-  const layersOpen = useCanvasStore((s: CanvasState) => s.layersPanelOpen)
+  // layers are toggled from the bottom-left overlay now
 
   const onAddImage = async () => {
     const id = Date.now().toString()
@@ -32,9 +31,9 @@ export default function FloatingToolbar() {
 
   return (
     <div className="floating-toolbar">
-      <button onClick={onAddImage} title="Add image">📷</button>
-      <button onClick={onAddRect} title="Add rectangle">▭</button>
-      {/* zoom moved to bottom-left toolbar */}
+      <button className="toolbar-button" onClick={onAddImage} title="Add image">📷</button>
+      <button className="toolbar-button" onClick={onAddRect} title="Add rectangle">▭</button>
+      {/* Zoom controls moved to left-bottom overlay next to layer toggle */}
       {/* Layers button moved to left-bottom toggle; keep FloatingToolbar compact */}
     </div>
   )

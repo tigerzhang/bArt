@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Stage, Layer as KonvaLayer, Image as KonvaImage, Rect, Text } from 'react-konva'
+import ZoomToolbar from './ZoomToolbar'
 import { useCanvasStore, Layer, CanvasState } from '../store/canvasStore'
 // no secondary React import
 
@@ -132,9 +133,10 @@ export default function CanvasSurface() {
             🗂
           </button>
         </div>
-        <div className="zoom-buttons">
-          <button aria-label="Zoom in" title="Zoom in" onClick={() => useCanvasStore.getState().setZoom(Math.min(useCanvasStore.getState().zoom * 1.2, 20))}>➕</button>
-          <button aria-label="Zoom out" title="Zoom out" onClick={() => useCanvasStore.getState().setZoom(Math.max(useCanvasStore.getState().zoom / 1.2, 0.1))}>➖</button>
+        {/* zoom toolbar lives in its own component so it can be shared */}
+        <div style={{ marginLeft: 8 }}>
+          {/* import ZoomToolbar inline to keep bottom-left layout tidy */}
+          <ZoomToolbar />
         </div>
       </div>
       {/* left panel removed; toggle hidden */}
