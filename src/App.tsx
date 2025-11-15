@@ -4,7 +4,6 @@ import FloatingToolbar from './components/FloatingToolbar'
 import RightPanel from './components/RightPanel'
 import LayersPanel from './components/LayersPanel'
 import { useCanvasStore, CanvasState } from './store/canvasStore'
-import TopBar from './components/TopBar'
 
 export default function App() {
   const toggleLayersPanel = useCanvasStore((s: CanvasState) => s.toggleLayersPanel)
@@ -22,7 +21,7 @@ export default function App() {
   return (
     <div className="app-root">
       <FloatingToolbar />
-      <TopBar />
+      {/* TopBar removed: top actions available via ZoomMenu and contextual toolbars */}
       <CanvasSurface />
       <RightPanel />
       <LayersPanel />

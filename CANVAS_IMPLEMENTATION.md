@@ -90,12 +90,12 @@ This document breaks down the implementation of the Canvas core (image + video c
       - Focus handling: when a panel or toolbar receives keyboard input, the canvas stage loses keyboard navigation focus; however common shortcuts (zoom, pan, tool toggles) should be supported globally by listening on the window key events.
   - Left and right panels should float above the canvas and not consume layout space by default, but both panels are docked by default in the example implementation; users can undock them to float as overlays.
     - The canvas also features a vertical, floating tool palette on the left (stacked circular icons) for quick actions (plus to add asset, text, pencil/draw, layers). Each icon opens the respective tool modal or toggles tool state.
-    - Canvas should cover the browser view (100% width and height minus the app's top bar), resize on window changes, and be scrollable when the content exceeds the visual area.
+    - Canvas should cover the browser view (100% width and height); toolbars and panels overlay the canvas and do not reduce the available canvas area. Resize on window changes and make the canvas scrollable when content exceeds the visual area.
     - Left and right panels should float above the canvas, aligned to the left and right edges respectively, and not consume layout space; they should remain interactive but visually overlay the canvas.
       - Panels should support auto-hide (collapse) toggles accessible in the toolbar to quickly hide/show floating panels.
       - Left and right panels can be docked to the left and right edges of the layout (always visible). Docking makes the layout a normal split — left panel, canvas center, right panel — instead of overlaying the canvas.
       - Panels and canvas are responsive: panel widths are computed at runtime from the viewport width (example: left panel ~18% of width clamped to 200–360px, right ~20% clamped to 240–420px). When a panel is hidden while docked the column collapses and the canvas expands to match the viewport. Panels that are undocked float as overlays and receive a width computed the same way.
-      - Add a toolbar action `Fit viewport` that computes the bounding box of the visible layers and zooms/pans the stage to show content within view. Add toolbar toggles to dock/undock each panel and to auto-hide them.
+      - Add a toolbar action `Fit viewport` that computes the bounding box of the visible layers and zooms/pans the stage to show content within view. Note: the `TopBar` has been removed to keep the canvas uncluttered — `Fit viewport` is accessible from the `ZoomMenu` and top-level layout actions are being consolidated into contextual toolbars.
 - Selection
   - Single-click to select. Shift+click to multi-select. Click+drag to marquee select.
   - Transform with `Transformer`, anchors for rotation/scale. Allow numeric input in `Inspector`.
@@ -164,7 +164,7 @@ This document breaks down the implementation of the Canvas core (image + video c
   - The viewport canvas supports smooth zoom and pan gestures across the entire viewport. Tools and overlays do not block pinch/gesture events unless they are the active target.
   - Zoom center: the zoom should center on the cursor/finger point and not the stage center when possible. Keep keyboard & mouse compatibility (`Cmd/Ctrl + MouseWheel`) + touch pinch.
   - Pan gestures: support `spacebar + drag` or two-finger pan on touch; provide a subtle cursor change while panning to show mode.
-  - Fit viewport: keep the `Fit viewport` toolbar action; it should compute the bounding box of visible layers and adjust zoom/pan so content fits inside the view (accounting for overlay margins if the right/left panels are visible by default as overlays).
+  - Fit viewport: keep the `Fit viewport` action; it should compute the bounding box of visible layers and adjust zoom/pan so content fits inside the view (accounting for overlay margins if the right/left panels are visible by default as overlays). The action has been moved to the `ZoomMenu` so it remains discoverable while keeping top UI minimal.
   - Zoom menu: the `ZoomToolbar` includes a zoom percentage pill that opens a rounded `ZoomMenu` with preset zooms and actions:
     - Zoom in / Zoom out (incremental — same effect as the + / - buttons)
     - Fit to Screen (computes and centers content)
@@ -205,7 +205,7 @@ This document breaks down the implementation of the Canvas core (image + video c
     - Handles & touch: anchors are rounded and increase hit zones on touch; hover expands the control indicator for desktop.
 - Snapping & Guides
   - Axis-aligned snapping with a threshold; show guide lines during move.
-  - Alignment tools: align left/center/right, distribute horizontally/vertically in top toolbar.
+  - Alignment tools: align left/center/right, distribute horizontally/vertically. In the absence of a TopBar these actions will be available via the contextual/toolbars and the inspector.
 - Group/Ungroup
   - Group selected items into a `group` layer; group toggles in `LayersPanel`.
 - Keyboard Shortcuts
@@ -307,12 +307,12 @@ This document breaks down the implementation of the Canvas core (image + video c
  - [ ] Add `SelectionBadge` to show asset dimensions on selection
  - [ ] Implement `DropZone` and `AssetDrop` handlers in `CanvasSurface` (drag enter/leave/over/drop) with coordinate translation
  - [ ] Add `OverlayManager` utility to control `pointer-events` and z-index for floating panels and toolbars
- - [ ] Add `Fit viewport` to top toolbar to compute bounding box and adjust zoom/pan for full-viewport canvas
+ - [ ] Add `Fit viewport` to top toolbar to compute bounding box and adjust zoom/pan for full-viewport canvas (deprecated: `TopBar` removed — prefer `ZoomMenu`)
  - [x] Implement `FloatingToolbar` & `ContextualToolbar` (selection quick actions)
  - [x] Add `SelectionBadge` to show asset dimensions on selection
  - [x] Implement `DropZone` and `AssetDrop` handlers in `CanvasSurface` (drag enter/leave/over/drop) with coordinate translation
  - [x] Add `OverlayManager` utility to control `pointer-events` and z-index for floating panels and toolbars (simple CSS-based toggler)
- - [x] Add `Fit viewport` to top toolbar to compute bounding box and adjust zoom/pan for full-viewport canvas
+ - [x] Add `Fit viewport` to `ZoomMenu` to compute bounding box and adjust zoom/pan for full-viewport canvas
 - [ ] Add snapping guides and alignment tools in top `Toolbar`
 - [ ] Add OffscreenCanvas worker and `ExportService`
 - [ ] Add `Timeline` and hooks for syncing with `CanvasSurface`

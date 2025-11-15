@@ -61,7 +61,9 @@ Target tech stack: React + Material UI (MUI), TypeScript, and suitable canvas & 
 
 ## Component Breakdown
 - App Shell
-  - `TopBar`, `LeftPanel`, `Canvas`, `RightPanel`, `BottomTimeline`
+  - `LeftPanel`, `Canvas`, `RightPanel`, `BottomTimeline`
+
+  - Note: `TopBar` has been removed from the default app shell to keep the canvas uncluttered; common top-level actions are now available via the `ZoomToolbar`/`ZoomMenu` and contextual `FloatingToolbar`.
 - Canvas Core
   - `CanvasSurface` (handles zoom/pan, mouse/touch events)
   - `LayerRenderer` (renders objects using chosen library: Konva, Pixi)
