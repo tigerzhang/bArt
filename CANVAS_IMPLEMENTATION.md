@@ -103,6 +103,8 @@ This document breaks down the implementation of the Canvas core (image + video c
 
     - Tool Selector (Select / Hand tool)
       - A new bottom-center selector toggles the canvas tool between `Select` and `Hand`.
+        - The selector shows two items side by side: a left display chip that renders the current tool icon (pointer arrow for Select, hand icon for Hand) and a right toggle button that reveals or hides the full selector menu.
+        - The right toggle button swaps between an up-arrow icon when the menu is expanded and a down-arrow icon when the menu is collapsed so the state remains obvious.
         - Select: single-click select, drag selected items to move them (the layer becomes draggable only when selected and the `Select` tool is active). A contextual floating toolbar appears near the selection with quick actions (lock/unlock, delete).
         - Hand: click and drag anywhere on the canvas to pan; clicking on layers does not change selection while this tool is active.
       - This behavior reduces accidental object movement when panning and groups panning & selection into two distinct modes for predictable editing.
