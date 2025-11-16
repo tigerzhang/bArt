@@ -22,6 +22,7 @@ export type CanvasState = {
   selectedId: string | null
   zoom: number
   pan: { x: number; y: number }
+  isDragging?: boolean
   layersPanelOpen?: boolean
   rightPanelOpen?: boolean
   addLayer: (layer: Layer) => void
@@ -31,6 +32,7 @@ export type CanvasState = {
   toggleLayerLock: (id: string) => void
   renameLayer: (id: string, name: string) => void
   moveLayer: (id: string, to: number) => void
+  removeLayer: (id: string) => void
   toggleLayersPanel?: () => void
   toggleRightPanel?: () => void
   setZoom: (z: number) => void
@@ -38,6 +40,10 @@ export type CanvasState = {
   canvasSize?: { width: number; height: number }
   setCanvasSize?: (size: { width: number; height: number }) => void
   // No left panel in this layout; toolbar actions live in `FloatingToolbar`
+  // tooling: track the active tool; default to 'select'
+  activeTool?: 'select' | 'hand'
+  setActiveTool?: (t: 'select' | 'hand') => void
+  setIsDragging?: (value: boolean) => void
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
@@ -62,6 +68,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   selectedId: null,
   zoom: 1,
   pan: { x: 0, y: 0 },
+  isDragging: false,
   layersPanelOpen: false,
   rightPanelOpen: true,
   addLayer: (layer) =>
@@ -84,10 +91,15 @@ export const useCanvasStore = create<CanvasState>((set) => ({
       copy.splice(Math.max(0, Math.min(to, copy.length)), 0, item)
       return { layers: copy }
     }),
+  removeLayer: (id) => set((s) => ({ layers: s.layers.filter((l) => l.id !== id), selectedId: s.selectedId === id ? null : s.selectedId })),
   toggleLayersPanel: () => set((s) => ({ layersPanelOpen: !s.layersPanelOpen })),
   toggleRightPanel: () => set((s) => ({ rightPanelOpen: !s.rightPanelOpen })),
   setZoom: (z) => set({ zoom: z }),
   setPan: (p) => set({ pan: p }),
   setCanvasSize: (size) => set({ canvasSize: size }),
+  // default tool is select
+  activeTool: 'select',
+  setActiveTool: (t) => set({ activeTool: t }),
+  setIsDragging: (value) => set({ isDragging: value }),
   // toggleLeftPanel removed
 }))

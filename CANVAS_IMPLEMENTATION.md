@@ -101,6 +101,19 @@ This document breaks down the implementation of the Canvas core (image + video c
   - Transform with `Transformer`, anchors for rotation/scale. Allow numeric input in `Inspector`.
   - Multi-select logic updates the `selectedIds` in `canvasStore`.
 
+    - Tool Selector (Select / Hand tool)
+      - A new bottom-center selector toggles the canvas tool between `Select` and `Hand`.
+        - Select: single-click select, drag selected items to move them (the layer becomes draggable only when selected and the `Select` tool is active). A contextual floating toolbar appears near the selection with quick actions (lock/unlock, delete).
+        - Hand: click and drag anywhere on the canvas to pan; clicking on layers does not change selection while this tool is active.
+      - This behavior reduces accidental object movement when panning and groups panning & selection into two distinct modes for predictable editing.
+      - Cursor & drag behavior refinement:
+        - When `Select` is active the mouse cursor remains the default arrow; don't switch to a `grab` cursor in Select mode to avoid confusion.
+        - When `Hand` is active the canvas cursor becomes a `hand/grab` cursor and turns into `grabbing` while panning.
+        - When `Select` is active and a layer is being dragged the canvas will not pan — the stage draggable state is explicitly disabled while the shape drag runs and restored afterward (so a long press or fast motion won't accidentally move the canvas during shape adjustments).
+        - Dragging updates are now persisted to the store only on drag end (`onDragEnd`) rather than every `onDragMove` event. Konva handles visual movement during drag and we commit final coordinates at the end. This reduces re-render churn and stabilizes the drag experience.
+          - Dragging updates are now persisted to the store only on drag end (`onDragEnd`) rather than every `onDragMove` event. Konva handles visual movement during drag and we commit final coordinates at the end. This reduces re-render churn and stabilizes the drag experience.
+          - Drag snapping & jitter mitigation: to avoid micro-jitter during drags at subpixel coordinates (especially at fractional zoom), we snap the node position to a subpixel grid by using a `dragBoundFunc` that rounds coordinates to the nearest physical pixel adjusted for stage zoom (x => round(x * zoom)/zoom). We also add a small `dragDistance` threshold (e.g., 2px) so minor pointer noise doesn't start a drag.
+
   ---
 
   ### Drag & drop assets
