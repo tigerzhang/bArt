@@ -1,4 +1,5 @@
 # Ignore node_modules folders
 **/node_modules/
-./dist/
-./prototypes/flutter-canvaskit-proto/build/
+/dist/
+/prototypes/flutter-canvaskit-proto/build/
+/prototypes/flutter-canvaskit-proto/.dart_tool/
