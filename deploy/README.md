@@ -57,3 +57,17 @@ This will serve static files on port 9090 and keep them alive through reboots vi
 SSL / HTTPS notes:
 - If you want to enable HTTPS, you will normally need port 80 or 443 available for certbot.
 - If you use HTTPS with Let's Encrypt, handle that on port 80 for challenge, then proxy to 9090 or change nginx to listen 443 after certificate setup.
+
+### Deploying the Flutter CanvasKit prototype (port 9091 sample)
+
+You can use the `deploy/deploy-flutter.sh` script to build and upload the Flutter web build and install an nginx server block to serve it on a custom port.
+
+```bash
+# Example usage: deploy to root@www.beiwanai.com and host on port 9091
+./deploy/deploy-flutter.sh root@www.beiwanai.com /var/www/flutter-canvaskit 9091
+```
+
+Notes:
+- The script builds the web app using `flutter build web --release`. It attempts to enable CanvasKit via `--web-renderer canvaskit` and falls back to `--dart-define=FLUTTER_WEB_USE_SKIA=true` if `--web-renderer` is not supported.
+- The script uploads `deploy/nginx-flutter.conf` to the remote host as `/etc/nginx/sites-available/flutter-canvaskit.conf` and symlinks it to sites-enabled. It edits the `listen` directive to the requested port automatically.
+- Ensure port 9091 (or the chosen port) is allowed in the server's firewall and cloud provider security groups.
